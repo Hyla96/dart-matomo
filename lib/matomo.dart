@@ -65,7 +65,9 @@ class MatomoTracker {
   late _MatomoDispatcher _dispatcher;
 
   static MatomoTracker _instance = MatomoTracker.internal();
+
   MatomoTracker.internal();
+
   factory MatomoTracker() => _instance;
 
   int? siteId;
@@ -78,6 +80,7 @@ class MatomoTracker {
   String? contentBase;
   int? width;
   int? height;
+  List<Dimension>? dimensions;
 
   bool _enableLog = false;
   bool initialized = false;
@@ -270,6 +273,13 @@ class Campaign {
         this.keyword = json['utm_term'];
 }
 
+class Dimension {
+  final String id;
+  final String value;
+
+  Dimension({required this.id, required this.value});
+}
+
 class _Session {
   final DateTime? firstVisit;
   final DateTime? lastVisit;
@@ -363,12 +373,19 @@ class _Event {
     if (eventName != null) {
       map['e_n'] = eventName;
     }
+
+    if (this.tracker.dimensions != null) {
+      this.tracker.dimensions?.forEach((dimension) {
+        map['dimension${dimension.id}'] = dimension.value;
+      });
+    }
     return map;
   }
 }
 
 class _MatomoDispatcher {
   final String baseUrl;
+
   _MatomoDispatcher(this.baseUrl);
 
   void send(_Event event) {
