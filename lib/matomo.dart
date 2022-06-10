@@ -262,18 +262,18 @@ class MatomoTracker {
 class Campaign {
   final String? name;
   final String? keyword;
-  final Map<String, String>? identifiers;
+  final String? gclid;
 
   Campaign(
     this.name,
     this.keyword, {
-    this.identifiers,
+    this.gclid,
   });
 
   Campaign.fromUtmParameters(Map<String, dynamic> json)
       : this.name = json['utm_campaign'] ?? (json['utm_medium'] ?? json['utm_source']),
         this.keyword = json['utm_term'],
-        this.identifiers = json['identifiers'] is Map<String, String> ? json['identifiers'] : null;
+        this.gclid = json['gclid'];
 }
 
 class _Session {
@@ -345,12 +345,9 @@ class _Event {
         map['_rck'] = this.tracker.campaign!.keyword;
         entries.addEntries([MapEntry('utm_term', this.tracker.campaign!.keyword!)]);
       }
-      if (this.tracker.campaign!.identifiers != null) {
-        final identifiers = tracker.campaign!.identifiers;
-        identifiers?.forEach((key, value) {
-          map[key] = value;
-          entries.addEntries([MapEntry(key, value)]);
-        });
+      if (this.tracker.campaign!.gclid != null) {
+        map['gclid'] = this.tracker.campaign!.gclid;
+        entries.addEntries([MapEntry('gclid', this.tracker.campaign!.gclid!)]);
       }
 
       if (url.hasQuery) {
