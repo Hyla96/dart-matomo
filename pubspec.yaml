@@ -19,7 +19,7 @@ dependencies:
   package_info: ^2.0.0
   shared_preferences: ^2.0.5
   logging: ^1.0.1
-  universal_html: ^2.0.7
+  universal_html: 2.0.7
 
 dev_dependencies:
   flutter_test:
