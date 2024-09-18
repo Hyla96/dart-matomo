@@ -2,10 +2,11 @@ name: matomo
 description: Cross-platform Matomo tracking for Flutter, using the Matomo API and written in pure Dart.
 version: 0.1.2
 homepage: https://github.com/poitch/dart-matomo
+publish_to: 'none'
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.0.0 <3.0.7'
+  flutter: '>=3.10.6'
 
 dependencies:
   flutter:
@@ -14,8 +15,8 @@ dependencies:
     git:
       url: https://github.com/Bringoff/fk_user_agent.git
       ref: apple-silicon-simulator-run-fix
-  http: ^0.13.1
-  uuid: ^3.0.3
+  http: ^1.1.0
+  uuid: ^4.2.2
   package_info: ^2.0.0
   shared_preferences: ^2.0.5
   logging: ^1.0.1
