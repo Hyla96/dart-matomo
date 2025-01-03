@@ -5,8 +5,8 @@ homepage: https://github.com/poitch/dart-matomo
 publish_to: 'none'
 
 environment:
-  sdk: '>=3.0.0 <3.6.0'
-  flutter: '>=3.10.6'
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.27.1'
 
 dependencies:
   flutter:
