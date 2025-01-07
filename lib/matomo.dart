@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:uuid/uuid.dart';
@@ -91,8 +90,14 @@ class MatomoTracker {
   Queue<_Event> _queue = Queue();
   late Timer _timer;
 
-  initialize(
-      {required int siteId, required String url, String? visitorId, Duration? dequequeRate, bool? enableLog, Campaign? campaign}) async {
+  Future<void> initialize({
+    required int siteId,
+    required String url,
+    String? visitorId,
+    Duration? dequequeRate,
+    bool? enableLog,
+    Campaign? campaign,
+  }) async {
     this.siteId = siteId;
     this.url = url;
     this._enableLog = enableLog ?? false;
@@ -115,9 +120,12 @@ class MatomoTracker {
       }
     }
 
-    // Screen Resolution
-    width = window.physicalSize.width.toInt();
-    height = window.physicalSize.height.toInt();
+    try {
+      final dispatcherSize = WidgetsBinding.instance.platformDispatcher.views.first.display.size;
+      // Screen Resolution
+      width = dispatcherSize.width.toInt();
+      height = dispatcherSize.height.toInt();
+    } catch (_) {}
 
     // Initialize Session Information
     var firstVisit = DateTime.now().toUtc();
@@ -171,7 +179,8 @@ class MatomoTracker {
 
     if (_enableLog)
       log.fine(
-          'Matomo Initialized: firstVisit=$firstVisit; lastVisit=$lastVisit; visitCount=$visitCount; visitorId=$visitorId; contentBase=$contentBase; resolution=${width}x$height; userAgent=$userAgent');
+        'Matomo Initialized: firstVisit=$firstVisit; lastVisit=$lastVisit; visitCount=$visitCount; visitorId=$visitorId; contentBase=$contentBase; resolution=${width}x$height; userAgent=$userAgent',
+      );
     this.initialized = true;
 
     _timer = Timer.periodic(this.dequequeRate!, (timer) {
@@ -381,8 +390,12 @@ class _Event {
 
     map['action_name'] = action;
 
-    final locale = window.locale;
-    map['lang'] = locale.toString();
+    try {
+      final dispatcherLocale = WidgetsBinding.instance.platformDispatcher.locale;
+      map['lang'] = dispatcherLocale.toString();
+    } catch (_) {
+      map['lang'] = 'unknown';
+    }
 
     map['h'] = _date.hour.toString();
     map['m'] = _date.minute.toString();
